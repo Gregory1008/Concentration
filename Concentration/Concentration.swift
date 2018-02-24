@@ -14,6 +14,8 @@ struct Concentration  {
     
     private(set) var flipCount = 0
     
+    private(set) var score = 0
+    
     private var indexOfOneAndOnlyFaceUpCard: Int? {
         get {
             return cards.indices.filter {cards[$0].isFaceUp}.oneAndOnly ?? nil
@@ -31,6 +33,7 @@ struct Concentration  {
             if cards[matchIndex] == cards[index] {
                 cards[matchIndex].isMatched = true
                 cards[index].isMatched = true
+                score += 2
             }
             cards[index].isFaceUp = true
         } else if indexOfOneAndOnlyFaceUpCard == nil  {
