@@ -148,7 +148,7 @@
                                     <color key="titleColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="newGame" destination="BYZ-38-t0r" eventType="touchUpInside" id="05o-dJ-NDy"/>
+                                    <action selector="newGame:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rvU-Bf-ozC"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -157,6 +157,8 @@
                     </view>
                     <connections>
                         <outlet property="flipCountLabel" destination="lRO-xZ-S9G" id="oBy-ky-sNq"/>
+                        <outlet property="newGameLabel" destination="elK-r2-w25" id="sxD-tx-9ih"/>
+                        <outlet property="scoreLabel" destination="0Rx-pD-SLo" id="9zT-CM-bS5"/>
                         <outletCollection property="cardButtons" destination="1KE-5o-eBH" collectionClass="NSMutableArray" id="0qp-CZ-8bB"/>
                         <outletCollection property="cardButtons" destination="Phw-NX-ARp" collectionClass="NSMutableArray" id="MqP-pa-mTp"/>
                         <outletCollection property="cardButtons" destination="qj2-yC-Uwg" collectionClass="NSMutableArray" id="PQo-E9-3d6"/>
@@ -173,7 +175,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-50.399999999999999" y="-26.600985221674879"/>
+            <point key="canvasLocation" x="188" y="-21"/>
         </scene>
     </scenes>
 </document>
