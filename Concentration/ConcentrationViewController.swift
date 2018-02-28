@@ -12,15 +12,16 @@ class ConcentrationViewController: UIViewController {
     
     lazy var game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
     
-    @IBOutlet weak var scoreLabel: UILabel!     { didSet {  setBackgroundColors(); updateViewFromModel() } }
+    @IBOutlet weak var scoreLabel: UILabel!
     
-    @IBOutlet weak var flipCountLabel: UILabel! { didSet {  setBackgroundColors(); updateViewFromModel() } }
+    @IBOutlet weak var flipCountLabel: UILabel!
     
-    @IBOutlet weak var newGameLabel: UIButton!  { didSet {  setBackgroundColors(); updateViewFromModel() } }
+    @IBOutlet weak var newGameLabel: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-         view.backgroundColor = choosenTheme.viewBackgroundColor
+        shuffleThemes()
+        updateViewFromModel()
     }
     
     @IBAction func touchCard(_ sender: UIButton) {
@@ -29,18 +30,7 @@ class ConcentrationViewController: UIViewController {
     }
     
     @IBOutlet var cardButtons: [UIButton]!
-    
-    private func setBackgroundColors() {
-        let attributes: [NSAttributedStringKey : Any] = [
-            .strokeColor : choosenTheme.buttonAndLabelBackgroundColor,
-            .strokeWidth : 5.0
-        ]
         
-        flipCountLabel?.attributedText = NSAttributedString(string: "Flips: \(game.flipCount)", attributes: attributes)
-        scoreLabel?.attributedText = NSAttributedString(string: "Score: \(game.score)", attributes: attributes)
-        newGameLabel?.setAttributedTitle(NSAttributedString(string: "New Game", attributes: attributes), for: .normal)
-    }
-    
     private func updateViewFromModel() {
         for index in cardButtons.indices {
             let card = game.cards[index]
@@ -53,7 +43,15 @@ class ConcentrationViewController: UIViewController {
                 button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0) : choosenTheme.buttonAndLabelBackgroundColor
             }
         }
-       
+        view.backgroundColor = choosenTheme.viewBackgroundColor
+        let attributes: [NSAttributedStringKey : Any] = [
+            .strokeColor : choosenTheme.buttonAndLabelBackgroundColor,
+            .strokeWidth : 5.0
+        ]
+        
+        flipCountLabel?.attributedText = NSAttributedString(string: "Flips: \(game.flipCount)", attributes: attributes)
+        scoreLabel?.attributedText = NSAttributedString(string: "Score: \(game.score)", attributes: attributes)
+        newGameLabel?.setAttributedTitle(NSAttributedString(string: "New Game", attributes: attributes), for: .normal)
     }
     
     private var emojiChoisesArray:
@@ -66,6 +64,10 @@ class ConcentrationViewController: UIViewController {
     
     private lazy var choosenTheme = emojiChoisesArray[0]
     
+    private func shuffleThemes() {
+        choosenTheme = emojiChoisesArray[emojiChoisesArray.count.arc4random]
+    }
+    
     private var emoji = [Int:String]()
     
     private func emoji(for card: Card) -> String {
@@ -77,10 +79,7 @@ class ConcentrationViewController: UIViewController {
     
     @IBAction func newGame(_ sender: UIButton) {
         game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
-        choosenTheme = emojiChoisesArray[emojiChoisesArray.count.arc4random]
-         emoji = [:]
-        view.backgroundColor = choosenTheme.viewBackgroundColor
-        setBackgroundColors()
+        shuffleThemes()
         updateViewFromModel()
     }
     
