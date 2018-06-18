@@ -11,9 +11,17 @@ import UIKit
 class ConcentrationViewController: UIViewController {
     
     lazy var game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
-
-    @IBOutlet weak var flipCountLabel: UILabel! {
-        didSet { updateViewFromModel() }
+    
+    @IBOutlet weak var scoreLabel: UILabel!
+    
+    @IBOutlet weak var flipCountLabel: UILabel!
+    
+    @IBOutlet weak var newGameLabel: UIButton!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        shuffleThemes()
+        updateViewFromModel()
     }
     
     @IBAction func touchCard(_ sender: UIButton) {
@@ -22,7 +30,7 @@ class ConcentrationViewController: UIViewController {
     }
     
     @IBOutlet var cardButtons: [UIButton]!
-    
+        
     private func updateViewFromModel() {
         for index in cardButtons.indices {
             let card = game.cards[index]
@@ -32,25 +40,46 @@ class ConcentrationViewController: UIViewController {
                 button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             } else {
                 button.setTitle("", for: .normal)
-                button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0) : #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
+                button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0) : choosenTheme.buttonAndLabelBackgroundColor
             }
         }
-        flipCountLabel.text = String(game.flipCount)
+        view.backgroundColor = choosenTheme.viewBackgroundColor
+        let attributes: [NSAttributedStringKey : Any] = [
+            .strokeColor : choosenTheme.buttonAndLabelBackgroundColor,
+            .strokeWidth : 5.0
+        ]
+        
+        flipCountLabel?.attributedText = NSAttributedString(string: "Flips: \(game.flipCount)", attributes: attributes)
+        scoreLabel?.attributedText = NSAttributedString(string: "Score: \(game.score)", attributes: attributes)
+        newGameLabel?.setAttributedTitle(NSAttributedString(string: "New Game", attributes: attributes), for: .normal)
     }
     
-    var emojiChoises = "🎃👻😱😈🦇🍬🍭🍎🙀".map {String($0)}
+    private var emojiChoisesArray:
+        [(emojiChoises: [String], buttonAndLabelBackgroundColor: UIColor, viewBackgroundColor: UIColor)] =
+        [  (["🎃","👻","😱","😈","🦇","🍬","🍭","🍎","🙀"],#colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1),#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)),
+           (["😂","😇","😍","😝","😎","😡","🤢","🤯","🤗"],#colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1),#colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)),
+           (["🇮🇳","🏳️‍🌈","🇩🇪","🇬🇹","🇺🇸","🇷🇺","🇮🇹","🇯🇵","🇨🇺"],#colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1),#colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)),
+           (["⚽️","🏹","⛳️","⛷","🎮","🎸","🏉","🎱","🏓"],#colorLiteral(red: 0.5568627715, green: 0.3529411852, blue: 0.9686274529, alpha: 1),#colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1))
+    ]
+    
+    private lazy var choosenTheme = emojiChoisesArray[0]
+    
+    private func shuffleThemes() {
+        choosenTheme = emojiChoisesArray[emojiChoisesArray.count.arc4random]
+    }
     
     private var emoji = [Int:String]()
     
     private func emoji(for card: Card) -> String {
-        if emoji[card.hashValue] == nil, !emojiChoises.isEmpty {
-            emoji[card.hashValue] = emojiChoises.remove(at: emojiChoises.count.arc4random)
+        if emoji[card.hashValue] == nil, !(choosenTheme.emojiChoises.isEmpty) {
+            emoji[card.hashValue] = choosenTheme.emojiChoises.remove(at: (choosenTheme.emojiChoises.count.arc4random))
         }
         return emoji[card.hashValue] ?? "?"
     }
     
-    @IBAction func newGame() {
+    @IBAction func newGame(_ sender: UIButton) {
         game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
+        shuffleThemes()
         updateViewFromModel()
     }
     
