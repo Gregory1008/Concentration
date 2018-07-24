@@ -20,7 +20,7 @@ class ConcentrationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        shuffleThemes()
+        //shuffleThemes()
         updateViewFromModel()
     }
     
@@ -30,8 +30,14 @@ class ConcentrationViewController: UIViewController {
     }
     
     @IBOutlet var cardButtons: [UIButton]!
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateViewFromModel()
+    }
         
     private func updateViewFromModel() {
+        if cardButtons != nil {
         for index in cardButtons.indices {
             let card = game.cards[index]
             let button = cardButtons[index]
@@ -42,6 +48,7 @@ class ConcentrationViewController: UIViewController {
                 button.setTitle("", for: .normal)
                 button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0) : choosenTheme.buttonAndLabelBackgroundColor
             }
+        }
         }
         view.backgroundColor = choosenTheme.viewBackgroundColor
         let attributes: [NSAttributedStringKey : Any] = [
@@ -56,13 +63,21 @@ class ConcentrationViewController: UIViewController {
     
     private var emojiChoisesArray:
         [(emojiChoises: [String], buttonAndLabelBackgroundColor: UIColor, viewBackgroundColor: UIColor)] =
-        [  (["🎃","👻","😱","😈","🦇","🍬","🍭","🍎","🙀"],#colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1),#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)),
-           (["😂","😇","😍","😝","😎","😡","🤢","🤯","🤗"],#colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1),#colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)),
-           (["🇮🇳","🏳️‍🌈","🇩🇪","🇬🇹","🇺🇸","🇷🇺","🇮🇹","🇯🇵","🇨🇺"],#colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1),#colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)),
-           (["⚽️","🏹","⛳️","⛷","🎮","🎸","🏉","🎱","🏓"],#colorLiteral(red: 0.5568627715, green: 0.3529411852, blue: 0.9686274529, alpha: 1),#colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1))
+        [
+           (["😂","😇","😍","😝","😎","😡","🤢","🤯","🤗","🤠"],#colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1),#colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)),
+           (["🇮🇳","🏳️‍🌈","🇩🇪","🇬🇹","🇺🇸","🇷🇺","🇮🇹","🇯🇵","🇨🇺","🇬🇾"],#colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1),#colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)),
+           (["⚽️","🏹","⛳️","⛷","🎮","🎸","🏉","🎱","🏓","⛸"],#colorLiteral(red: 0.5568627715, green: 0.3529411852, blue: 0.9686274529, alpha: 1),#colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1))
     ]
     
-    private lazy var choosenTheme = emojiChoisesArray[0]
+    var theme: ([String],UIColor,UIColor)? {
+        didSet {
+            choosenTheme = theme ?? ([""],#colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1),#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
+                emoji = [:]
+            updateViewFromModel()
+        }
+    }
+    
+    private lazy var choosenTheme = (emojiChoises: ["🎃","👻","😱","😈","🦇","🍬","🍭","🍎","🙀","👽"],buttonAndLabelBackgroundColor: #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1),viewBackgroundColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
     
     private func shuffleThemes() {
         choosenTheme = emojiChoisesArray[emojiChoisesArray.count.arc4random]
